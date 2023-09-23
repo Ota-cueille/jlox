@@ -6,11 +6,19 @@
     "configurations": [
         {
             "type": "java",
+            "name": "GenrateAstClass",
+            "request": "launch",
+            "mainClass": "com.ota.tool.GenrateAstClass",
+            "projectName": "jlox_5133ec85",
+            "args": "${workspaceFolder}/src/com/ota/jlox/"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "com.ota.jlox.Main",
             "projectName": "jlox_5133ec85",
             "args": "./examples/main.jlox"
-        }
+        },
     ]
 }

@@ -9,7 +9,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class Main {
+	private static final Interpreter interpreter = new Interpreter();
+
 	static boolean hadError = false;
+	static boolean hadRuntimeError = false;
 
 	public static void main(String[] args) throws IOException {
 		if(args.length > 1) {
@@ -27,6 +30,7 @@ public class Main {
 		run(new String(bytes, Charset.defaultCharset()));
 
 		if(hadError) System.exit(-1);
+		if(hadRuntimeError) System.exit(-2);
 	}
 
 	private static void runPrompt() throws IOException {
@@ -46,9 +50,12 @@ public class Main {
 		Lexer lexer = new Lexer(source);
 		List<Token> tokens = lexer.scanTokens();
 
-		for(Token token : tokens) {
-			System.out.println(token);
-		}
+		Parser parser = new Parser(tokens);
+		List<Stmt> statements = parser.parse();
+
+		if(hadError) return;
+		interpreter.interpret(statements);
+		// System.out.println(new AstPrinter().print(expression));
 	}
 
 	static void error(int line, String message) {
@@ -58,5 +65,17 @@ public class Main {
 	private static void report(int line, String where, String message) {
 		System.err.println("[line " + line + "] Error " + where + ": " + message);
 		hadError = true;
+	}
+
+	static void error(Token token, String message) {
+		String location = (token.type == TokenType.EOF) ?
+			" at end" :
+			" at '" + token.lexeme + "'";
+		report(token.line, location, message);
+	}
+
+	static void runtimeError(RuntimeError error) {
+		System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
+		hadRuntimeError = true;
 	}
 }
