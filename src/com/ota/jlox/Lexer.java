@@ -175,7 +175,7 @@ class Lexer {
 
 	private boolean isAlpha(char c) {
 		return (c >= 'a' && c <= 'z') ||
-			   (c >= 'A' && c <= 'A') ||
+			   (c >= 'A' && c <= 'Z') ||
 			   c == '_';
 	}
 
